@@ -73,7 +73,7 @@
                 // Prevent form submission
                 e.preventDefault();
 
-                // Reset error variables and clear previous messages on each submit
+                // Reset error variables on each submit
                 var missingfields = "";
                 var errormessage = "";
                 $("#errors").html(""); // Clear previous errors
@@ -89,13 +89,27 @@
                     missingfields +="<p>Password not filled</p>";
                 }
 
+                // Restrict phone number to exactly 10 digits
+                var phoneVal = $("#Phone-number").val();
+                if(phoneVal != "" && !/^\d{10}$/.test(phoneVal)){
+                    errormessage +="<p>Phone-number must be exactly 10 digits</p>";
+                } else if(phoneVal != "" && $.isNumeric(phoneVal) == false){
+                    errormessage +="<p>Phone-number is not valid</p>";
+                }
+                 if($("#Phone-number").val() != "" && $.isNumeric($("#Phone-number").val()) == false){
+                    errormessage +="<p>Phone-number is not valid</p>";
+                }
                 if($("#Email").val() != "" && isEmail($("#Email").val()) == false ){
                     errormessage +="<p>Email id is not valid</p>";
                 }
-                if($("#Phone-number").val() != "" && $.isNumeric($("#Phone-number").val()) == false){
-                    errormessage +="<p>Phone-number is not valid</p>";
+
+                // Enforce password format: min 8 chars, 1 uppercase, 1 lowercase, 1 number
+                var passwordVal = $("#Password").val();
+                if(passwordVal != "" && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(passwordVal)){
+                    errormessage += "<p>Password must be at least 8 characters and include uppercase, lowercase, and a number</p>";
                 }
-                if($("#Password").val() != "" && $("#Password").val() != $("#confirmPassword").val()){
+
+                if(passwordVal != "" && passwordVal != $("#confirmPassword").val()){
                     errormessage +="<p>Passwords do not match</p>";
                 }
                 if(missingfields == "" && errormessage == ""){
