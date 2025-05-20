@@ -65,39 +65,45 @@
         </div>
 
         <script>
-            var missingfields="";
-            var errormessage="";
             function isEmail(Email) {
                 var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
                 return regex.test(Email);
-                }
-                $("#submitbutton").click(function(){
+            }
+            $("#submitbutton").click(function(e){
+                // Prevent form submission
+                e.preventDefault();
+
+                // Reset error variables and clear previous messages on each submit
+                var missingfields = "";
+                var errormessage = "";
+                $("#errors").html(""); // Clear previous errors
+                $("#success").html(""); // Clear previous success
+
                 if($("#Email").val() == ""){
                     missingfields +="<p>Email not filled</p>";
-                    }
-                    if($("#Phone-number").val() == ""){
+                }
+                if($("#Phone-number").val() == ""){
                     missingfields +="<p>Phone-number not filled</p>";
-                    }
-                    if($("#Password").val() == ""){
+                }
+                if($("#Password").val() == ""){
                     missingfields +="<p>Password not filled</p>";
-                    }
-                
-                    if(isEmail($("#Email").val()) == false ){
+                }
+
+                if($("#Email").val() != "" && isEmail($("#Email").val()) == false ){
                     errormessage +="<p>Email id is not valid</p>";
                 }
-                if($.isNumeric($("#Phone-number").val()) == false){
+                if($("#Phone-number").val() != "" && $.isNumeric($("#Phone-number").val()) == false){
                     errormessage +="<p>Phone-number is not valid</p>";
                 }
-                if($("#Password").val() != $("#confirmPassword").val()){
+                if($("#Password").val() != "" && $("#Password").val() != $("#confirmPassword").val()){
                     errormessage +="<p>Passwords do not match</p>";
                 }
-                if(errormessage == ""){
+                if(missingfields == "" && errormessage == ""){
                     $("#success").html("You are successfully registered");
                 }else{
                     $("#errors").html(missingfields + errormessage);
                 }
             });
-           
         </script>
         
     </body>
