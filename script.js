@@ -60,62 +60,67 @@ function isValidPhone(phone) {
     return /^\d{10}$/.test(phone);
 }
 
-// Allow only 8 characters, letters and numbers, in password input
-passwordInput.addEventListener('input', function () {
-    // Remove non-letter/number and limit to 8 chars
-    this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 8);
-});
-
-// Allow only 8 characters, letters and numbers, in confirm password input
-confirmPasswordInput.addEventListener('input', function () {
-    this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 8);
-});
-
 // Update password validation: exactly 8 chars, at least one letter and one number
 function isValidPassword(password) {
-    return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8}$/.test(password);
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8}$/;
+    return passwordPattern.test(password);
 }
 
-// Allow only numeric input for phone number
+// Restrict password and confirm password input to 8 characters max
+function restrictToEightChars(inputElement) {
+    inputElement.addEventListener('input', function () {
+        this.value = this.value.slice(0, 8);
+    });
+}
+restrictToEightChars(passwordInput);
+restrictToEightChars(confirmPasswordInput);
+
+// Only allow numbers for phone input, max 10 digits
 phoneInput.addEventListener('input', function () {
     this.value = this.value.replace(/\D/g, '').slice(0, 10);
 });
 
-// Allow only letters for name input
+// Only allow letters and spaces for name input
 nameInput.addEventListener('input', function () {
     this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
 });
 
 // Form submit handler
-form.addEventListener('submit', function (e) {
-    e.preventDefault();
+form.addEventListener('submit', function (event) {
+    event.preventDefault();
     hideMessage();
 
-    // Get field values
-    const name = form.name.value.trim();
-    const email = form.email.value.trim();
-    const phone = form.phone.value.trim();
-    const password = form.password.value;
-    const confirmPassword = form.confirmPassword.value;
+    // Get trimmed field values
+    const nameValue = form.name.value.trim();
+    const emailValue = form.email.value.trim();
+    const phoneValue = form.phone.value.trim();
+    const passwordValue = form.password.value;
+    const confirmPasswordValue = form.confirmPassword.value;
 
-    // Collect all errors
+    // Collect validation errors
     const errors = [];
-    if (!name) errors.push('Name is required.');
-    if (!email) errors.push('Email is required.');
-    if (!phone) errors.push('Phone number is required.');
-    if (!password) errors.push('Password is required.');
-    if (!confirmPassword) errors.push('Confirm password is required.');
-    if (email && !isValidEmail(email)) errors.push('Please enter a valid email address.');
-    if (phone && !isValidPhone(phone)) errors.push('Phone number must be exactly 10 digits.');
-    if (password && !isValidPassword(password)) errors.push('Password must be exactly 8 characters and include both letters and numbers.');
-    if (password && confirmPassword && password !== confirmPassword) errors.push('Passwords do not match.');
+    if (!nameValue) errors.push('Name is required.');
+    if (!emailValue) errors.push('Email is required.');
+    if (!phoneValue) errors.push('Phone number is required.');
+    if (!passwordValue) errors.push('Password is required.');
+    if (!confirmPasswordValue) errors.push('Confirm password is required.');
+    if (emailValue && !isValidEmail(emailValue)) errors.push('Please enter a valid email address.');
+    if (phoneValue && !isValidPhone(phoneValue)) errors.push('Phone number must be exactly 10 digits.');
+    if (passwordValue && !isValidPassword(passwordValue)) {
+        errors.push(
+            'Password must be exactly 8 characters and include at least one uppercase letter, one lowercase letter, one number, and one special character.'
+        );
+    }
+    if (passwordValue && confirmPasswordValue && passwordValue !== confirmPasswordValue) {
+        errors.push('Passwords do not match.');
+    }
 
+    // Show errors or success message
     if (errors.length > 0) {
         showMessage(errors, 'error');
         return;
     }
 
-    // Success
     showMessage('Registration successful!', 'success');
     form.reset();
     togglePasswordBtn.textContent = 'Show';
