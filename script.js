@@ -60,20 +60,11 @@ function isValidPhone(phone) {
     return /^\d{10}$/.test(phone);
 }
 
-// Update password validation: exactly 8 chars, at least one letter and one number
+// Update password validation: at least 8 chars,one letter and one number
 function isValidPassword(password) {
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8}$/;
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
     return passwordPattern.test(password);
 }
-
-// Restrict password and confirm password input to 8 characters max
-function restrictToEightChars(inputElement) {
-    inputElement.addEventListener('input', function () {
-        this.value = this.value.slice(0, 8);
-    });
-}
-restrictToEightChars(passwordInput);
-restrictToEightChars(confirmPasswordInput);
 
 // Only allow numbers for phone input, max 10 digits
 phoneInput.addEventListener('input', function () {
@@ -108,7 +99,7 @@ form.addEventListener('submit', function (event) {
     if (phoneValue && !isValidPhone(phoneValue)) errors.push('Phone number must be exactly 10 digits.');
     if (passwordValue && !isValidPassword(passwordValue)) {
         errors.push(
-            'Password must be exactly 8 characters and include at least one uppercase letter, one lowercase letter, one number, and one special character.'
+            'Password must be at least 8 characters and include at least one uppercase letter, one lowercase letter, one number, and one special character.'
         );
     }
     if (passwordValue && confirmPasswordValue && passwordValue !== confirmPasswordValue) {
