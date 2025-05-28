@@ -62,8 +62,7 @@ function isValidPhone(phone) {
 
 // Update password validation: at least 8 chars,one letter and one number
 function isValidPassword(password) {
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
-    return passwordPattern.test(password);
+    return  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/.test(password);
 }
 
 // Only allow numbers for phone input, max 10 digits
